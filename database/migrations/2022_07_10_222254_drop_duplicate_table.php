@@ -13,7 +13,7 @@ class DropDuplicateTable extends Migration
      */
     public function up()
     {
-     Schema::drop('activitiy_user');
+     //Schema::drop('activitiy_user');
     }
 
     /**

@@ -42,6 +42,7 @@ class TripController extends Controller
         $governement->save();
         $trip=new Trip;
         $trip->governorate_id= $governement->id;
+
         return  $trip;
     }
 

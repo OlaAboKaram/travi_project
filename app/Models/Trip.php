@@ -63,7 +63,7 @@ public function areas(){
   return $this-> belongsToMany(Area::class,'area_trip');
 }
 public function governements(){
-  return $this-> belongsToMany(Governorate ::class,'governement_trip');
+  return $this-> belongsToMany(Governement ::class,'governement_trip');
 }
 public function states(){
   return $this-> belongsToMany(State ::class,'state_trip');

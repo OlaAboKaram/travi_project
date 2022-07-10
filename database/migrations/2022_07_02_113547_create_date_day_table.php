@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('date_days', function (Blueprint $table) {
+        Schema::create('date_day', function (Blueprint $table) {
             $table->id();
             $table->dateTime('day');
             

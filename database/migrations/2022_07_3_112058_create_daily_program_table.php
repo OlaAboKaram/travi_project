@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('daily_programs', function (Blueprint $table) {
+        Schema::create('daily_program', function (Blueprint $table) {
             $table->increments('id');
             /*
             $table->foreignId(column:'trip_id')->constrained()->cascadeOnDelete(); 
