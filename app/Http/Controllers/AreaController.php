@@ -49,7 +49,7 @@ class AreaController extends Controller
         $area->image3= $request->image3->hashName();
         $area->save();
       
-        return  $region;
+        return  $area;
         
 
 
