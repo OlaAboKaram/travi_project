@@ -33,11 +33,27 @@ class StateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function addState(Request $request)
     {
-        //
+        $state=new State;
+        $state->name=$request->name;
+        $state->save();
+        return response()->json(['message' => 'User successfully add state']);
     }
 
+    public function selectState($trip_id,$state_id)
+    {
+        $trip = Trip::find($trip_id);
+        $state = State::find($state_id);
+        $trip->states()->attach($state->id);
+        $tripStates = $trip->states;
+        foreach($tripStates as $tripState)
+        {
+            echo $tripState->name . '  ';
+        }
+        
+        return response()->json(['message' => 'User successfully select state']);
+    }
     /**
      * Display the specified resource.
      *

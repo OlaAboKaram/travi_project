@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('trips', function (Blueprint $table) {
             $table->increments('id');
             
-            $table->integer('state-id')->unsigned();
-        $table->integer('governorate-id')->unsigned();
-         $table->integer('area-id')->unsigned();
-         $table->integer('user-id')->unsigned();
-          $table->integer('daily_program-id')->unsigned();
+            $table->integer('state_id')->unsigned()->nullable();
+        $table->integer('governement_id')->unsigned()->nullable();
+         $table->integer('area_id')->unsigned()->nullable();
+         $table->integer('user_id')->unsigned()->nullable();
+          $table->integer('daily_program_id')->unsigned()->nullable();
           
         //    $table->unsignedBigInteger(column:'state-id');
         //  $table->foreign('state_id')->references('id')->on('states')->onDelete('cascade');
@@ -29,7 +29,7 @@ return new class extends Migration
 //$table->foreignId(column:'type-id')->constrained()->cascadeOnDelete();  
             $table->string('name');
             $table->enum('age',['10-20','20-30','30-40','40-50','50-60','60-70'])->default('20-30');
-           $table->enum('type',['Family trip','شباب','جامعية','مدرسة ','بنات']);
+           $table->enum('type',['family','شباب','جامعية','مدرسة ','بنات'])->default('family');
             $table->float('price');
             
             $table->date('start_date');
@@ -38,10 +38,10 @@ return new class extends Migration
            $table->date('start_trip');
            $table->date('end_trip');
 
-           $table->integer('rest');
+           $table->integer('rest')->nullable();
            $table->integer('total');
             $table->string('image')->nullable();
-            $table->integer('reiteration');
+           $table->integer('reiteration');
           
             $table->enum('coutinent',['africa','antarctica','asia','australia','europe','north america','south america'])->default('africa');
            
