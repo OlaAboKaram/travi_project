@@ -37,11 +37,23 @@ class TripController extends Controller
      */
     public function store(Request $request)
     {
-        $governement=new Governement;
-        $governement->name=$request->name;
-        $governement->save();
+     
         $trip=new Trip;
-        $trip->governorate_id= $governement->id;
+        $trip->name=$request->name;
+        $trip->age=$request->age;
+        $trip->type=$request->type;
+        $trip->price=$request->price;
+        $trip->start_date=$request->start_date;
+        $trip->expiry_date=$request->expiry_date;
+        $trip->start_trip=$request->start_trip;
+        $trip->end_trip=$request->end_trip;
+        $trip->total=$request->total;
+        $trip->image=$request->image;
+        $trip->coutinent=$request->coutinent;
+        $trip->reiteration=$request->reiteration;
+        $trip->name_team=$request->name_team;
+        $trip->about=$request->about;
+        $trip->save();
 
         return  $trip;
     }

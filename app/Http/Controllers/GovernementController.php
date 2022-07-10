@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\governement;
+use App\Models\Governement;
+use App\Models\Trip;
+
 use Illuminate\Http\Request;
 
 class GovernementController extends Controller
@@ -33,10 +35,29 @@ class GovernementController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function addGov(Request $request)
     {
-        //
+        $governement=new Governement;
+        $governement->name=$request->name;
+        $governement->save();
+        return response()->json(['message' => 'User successfully add governement']);
     }
+
+    public function selectGov($trip_id,$gov_id)
+    {
+        $trip = Trip::find($trip_id);
+        $governement = Governement::find($gov_id);
+        $trip->governements()->attach($governement->id);
+        $tripGovs = $trip->governements;
+        foreach($tripGovs as $tripGov)
+        {
+            echo $tripGov->name . '  ';
+        }
+        
+        return response()->json(['message' => 'User successfully select governement']);
+    }
+
+    
 
     /**
      * Display the specified resource.
