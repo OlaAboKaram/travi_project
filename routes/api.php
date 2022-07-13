@@ -3,8 +3,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\DailyProgramController;
 use App\Http\Controllers\EventController;
-
+use App\Http\Controllers\DatedayController;
 use App\Http\Controllers\GovernementController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\TripController;
@@ -41,6 +42,8 @@ Route::group([
     Route::post('/addArea', [AreaController::class,'addArea']);
     Route::post('/selectArea/{trip_id}/{area_id}', [AreaController::class,'selectArea']);
     Route::post('/addEvent/{id}', [EventController::class,'addEvent']);
+    Route::post('/addDay/{id}', [DatedayController::class,'addDay']);
+    Route::post('/addDailyProgram/{id}', [DailyProgramController::class,'addDailyProgram']);
 
 
 });
