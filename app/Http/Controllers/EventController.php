@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\state;
-use App\Models\Trip;
-
+use App\Models\Dateday;
+use App\Models\Event;
 use Illuminate\Http\Request;
 
-class StateController extends Controller
+class EventController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,34 +34,27 @@ class StateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function addState(Request $request)
+    public function addEvent(Request $request,$id)
     {
-        $state=new State;
-        $state->name=$request->name;
-        $state->save();
-        return response()->json(['message' => 'User successfully add state']);
+        $dateday = Dateday::find($id);
+        $uploadedImages=$request->image->store('public/uploads/');
+        $event=new Event();
+        $event->name=$request->input('name');
+        $event->description=$request->input('description');
+        $event->timing=$request->input('timing');
+        $event->image= $request->image->hashName();
+        $event->save();
+        $dateday= $dateday->events()->save($event);
+        return  $dateday;
     }
 
-    public function selectState($trip_id,$state_id)
-    {
-        $trip = Trip::find($trip_id);
-        $state = State::find($state_id);
-        $trip->states()->attach($state->id);
-        $tripStates = $trip->states;
-        foreach($tripStates as $tripState)
-        {
-            echo $tripState->name . '  ';
-        }
-        
-        return response()->json(['message' => 'User successfully select state']);
-    }
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\state  $state
+     * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function show(state $state)
+    public function show(Event $event)
     {
         //
     }
@@ -70,10 +62,10 @@ class StateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\state  $state
+     * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function edit(state $state)
+    public function edit(Event $event)
     {
         //
     }
@@ -82,10 +74,10 @@ class StateController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\state  $state
+     * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, state $state)
+    public function update(Request $request, Event $event)
     {
         //
     }
@@ -93,10 +85,10 @@ class StateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\state  $state
+     * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function destroy(state $state)
+    public function destroy(Event $event)
     {
         //
     }

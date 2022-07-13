@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('date_day_id')->unsigned();
             $table->integer('timing_id')->unsigned();
             $table->integer('place_id')->unsigned();
-            $table->integer('activity-id')->unsigned();
+            $table->integer('activity_id')->unsigned();
             $table->integer('addition_id')->unsigned();
             // $table->integer('نشاط_id')->unsigned();
             //$table->unsignedBigInteger(column:'user-id');
