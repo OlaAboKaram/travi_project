@@ -13,11 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('date_day', function (Blueprint $table) {
-            $table->id();
-            $table->dateTime('day');
-            
+        Schema::create('events', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('dateday_id')->unsigned()->nullable();;
+    
+            $table->string('name');
+            $table->string('description');
+            $table->string('timing');
+            $table->string('image');
             $table->timestamps();
+
         });
     }
 
@@ -28,6 +33,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('date_days');
+        Schema::dropIfExists('events');
     }
 };
+
+
+
+

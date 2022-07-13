@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\state;
-use App\Models\Trip;
-
+use App\Models\Date_Day;
 use Illuminate\Http\Request;
 
-class StateController extends Controller
+class DateDayController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,34 +33,18 @@ class StateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function addState(Request $request)
+    public function store(Request $request)
     {
-        $state=new State;
-        $state->name=$request->name;
-        $state->save();
-        return response()->json(['message' => 'User successfully add state']);
+        //
     }
 
-    public function selectState($trip_id,$state_id)
-    {
-        $trip = Trip::find($trip_id);
-        $state = State::find($state_id);
-        $trip->states()->attach($state->id);
-        $tripStates = $trip->states;
-        foreach($tripStates as $tripState)
-        {
-            echo $tripState->name . '  ';
-        }
-        
-        return response()->json(['message' => 'User successfully select state']);
-    }
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\state  $state
+     * @param  \App\Models\Date_Day  $date_Day
      * @return \Illuminate\Http\Response
      */
-    public function show(state $state)
+    public function show(Date_Day $date_Day)
     {
         //
     }
@@ -70,10 +52,10 @@ class StateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\state  $state
+     * @param  \App\Models\Date_Day  $date_Day
      * @return \Illuminate\Http\Response
      */
-    public function edit(state $state)
+    public function edit(Date_Day $date_Day)
     {
         //
     }
@@ -82,10 +64,10 @@ class StateController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\state  $state
+     * @param  \App\Models\Date_Day  $date_Day
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, state $state)
+    public function update(Request $request, Date_Day $date_Day)
     {
         //
     }
@@ -93,10 +75,10 @@ class StateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\state  $state
+     * @param  \App\Models\Date_Day  $date_Day
      * @return \Illuminate\Http\Response
      */
-    public function destroy(state $state)
+    public function destroy(Date_Day $date_Day)
     {
         //
     }

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Models\Area;
+use App\Models\Trip;
+
+
 use Illuminate\Http\Request;
 
 class AreaController extends Controller
@@ -36,7 +39,7 @@ class AreaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeArea(Request $request)
+    public function addArea(Request $request)
     {
         $uploadedImages=$request->image1->store('public/uploads/');
         $uploadedImages=$request->image2->store('public/uploads/');
@@ -48,12 +51,21 @@ class AreaController extends Controller
         $area->image2= $request->image2->hashName();
         $area->image3= $request->image3->hashName();
         $area->save();
-      
-        return  $area;
-        
+        return  $area; 
+    }
 
+    public function selectArea($trip_id,$area_id)
+    {
+        $trip = Trip::find($trip_id);
+        $area = Area::find($area_id);
+        $trip->areas()->attach($area->id);
+        $tripAreas = $trip->areas;
+        foreach($tripAreas as $tripArea)
+        {
+            echo $tripArea->name . '  ';
+        }
+        return response()->json(['message' => 'User successfully select state']);
 
-    
     }
     /**
      * Display the specified resource.
