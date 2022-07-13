@@ -13,7 +13,10 @@ class Area extends Model
         'name',
         'image1',
         'image2',
-        'image3'
+        'image3',
+        'description',
+        'country',
+        'city'
 ];
 public function trips(){
   return $this->belongsToMany(Trip::class,'area_trip');

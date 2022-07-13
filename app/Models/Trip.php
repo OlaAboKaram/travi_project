@@ -66,6 +66,10 @@ public function governements(){
   return $this-> belongsToMany(Governement ::class,'governement_trip');
 }
 public function states(){
-  return $this-> belongsToMany(State ::class,'state_trip');
+  return $this-> belongsToMany(State::class,'state_trip');
+}
+
+public function dailyprograms(){
+  return $this-> hasOne(Dailyprogram::class);
 }
 }

@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('datedays', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('desription');
+            $table->integer('dailyprogram_id')->unsigned();
+            $table->enum('name',['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'])->default('Sunday');
+            $table->string('description');
             $table->dateTime('day');
             $table->timestamps();
         });

@@ -13,16 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('areas', function (Blueprint $table) {
+        Schema::create('dailyprograms', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('country');
-            $table->string('city');
-            $table->string('image1')->nullable();
-            $table->string('image2')->nullable();
-            $table->string('image3')->nullable();
-            $table->longText('description');
-             $table->timestamps();
+            $table->integer('trip_id')->unsigned();
+            $table->foreign('trip_id')->references('id')->on('trips')
+            ->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('areas');
+        Schema::dropIfExists('dailyprograms');
     }
 };
