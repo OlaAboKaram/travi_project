@@ -14,6 +14,7 @@ class Trip extends Model
         'type',
         'price',
         'start_date',
+        'dailyprogram_id',
         'expiry_date',
         'start_trip',
         'end_trip',
