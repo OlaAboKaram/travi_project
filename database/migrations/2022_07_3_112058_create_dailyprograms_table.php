@@ -15,10 +15,7 @@ return new class extends Migration
     {
         Schema::create('dailyprograms', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('trip_id')->unsigned();
-            $table->foreign('trip_id')->references('id')->on('trips')
-            ->onDelete('cascade');
-            $table->timestamps();
+            $table->timestamps();         
         });
     }
 

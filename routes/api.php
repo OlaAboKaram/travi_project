@@ -40,7 +40,9 @@ Route::group([
     Route::post('/addState', [StateController::class,'addState']);
     Route::post('/selectState/{trip_id}/{state_id}', [StateController::class,'selectState']);
     Route::post('/addArea', [AreaController::class,'addArea']);
+    Route::post('/selectCountry_City/{trip_id}', [AreaController::class,'selectCountry_City']);
     Route::post('/selectArea/{trip_id}/{area_id}', [AreaController::class,'selectArea']);
+
     Route::post('/addEvent/{id}', [EventController::class,'addEvent']);
     Route::post('/addDay/{id}', [DatedayController::class,'addDay']);
     Route::post('/addDailyProgram/{id}', [DailyProgramController::class,'addDailyProgram']);

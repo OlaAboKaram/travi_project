@@ -20,8 +20,7 @@ return new class extends Migration
         $table->integer('governement_id')->unsigned()->nullable();
          $table->integer('area_id')->unsigned()->nullable();
          $table->integer('user_id')->unsigned()->nullable();
-          $table->integer('daily_program_id')->unsigned()->nullable();
-          
+          $table->integer('dailyprogram_id')->unsigned();          
         //    $table->unsignedBigInteger(column:'state-id');
         //  $table->foreign('state_id')->references('id')->on('states')->onDelete('cascade');
           //  $table->foreignId(column:'state-id')->constrained()->cascadeOnDelete();   

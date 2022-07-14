@@ -39,8 +39,9 @@ class DailyProgramController extends Controller
         $trip = Trip::find($id);
         $dailyprogaram=new Dailyprogram();
         $dailyprogaram->save();
-        $trip= $trip->dailyprograms()->save($dailyprogaram);
-        return $dailyprogaram;
+        $trip->dailyprogram_id=$dailyprogaram->id;
+        $trip->save();
+        return $trip;
     }
     
 

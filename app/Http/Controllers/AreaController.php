@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\Trip;
 
-
 use Illuminate\Http\Request;
+use app\Http\Controllers\Response;
+
 
 class AreaController extends Controller
 {
@@ -54,18 +55,27 @@ class AreaController extends Controller
         return  $area; 
     }
 
+    public function selectCountry_City(Request $request,$trip_id)
+    {
+        $trip = Trip::find($trip_id);
+        $tripAreas = $trip->areas;
+        $fitCountries = $request->get('country');
+        $fitCities = $request->get('city');
+        $areas=Area::where('country', 'LIKE', '%'. $fitCountries. '%')->where( 'city', 'LIKE', '%'. $fitCities. '%')->get();
+        $areaName= $request->get('name');      
+        //$area = Area::find($area_id);
+       // $trip->areas()->attach($area->id);
+       return response()->json(array(
+        'areas' => $areas,       
+     ));
+    }
+
     public function selectArea($trip_id,$area_id)
     {
         $trip = Trip::find($trip_id);
         $area = Area::find($area_id);
         $trip->areas()->attach($area->id);
-        $tripAreas = $trip->areas;
-        foreach($tripAreas as $tripArea)
-        {
-            echo $tripArea->name . '  ';
-        }
-        return response()->json(['message' => 'User successfully select state']);
-
+        return "selected";
     }
     /**
      * Display the specified resource.

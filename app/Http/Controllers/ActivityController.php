@@ -25,7 +25,7 @@ class ActivityController extends Controller
 
     public function insert_user_activities($id){
         $user =auth()->user();	
-          return $user->activities()->attach($id);
+          return $user->activities->attach($id);
     }
 
     public function show_user_activities(){
