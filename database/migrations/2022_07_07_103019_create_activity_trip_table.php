@@ -17,7 +17,6 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('activity_id')->unsigned();
             $table->integer('trip_id')->unsigned();
-            $table->timestamps();
         });
     }
 
