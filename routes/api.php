@@ -32,9 +32,17 @@ Route::group([
     Route::get('/user-profile', [AuthController::class, 'userProfile']);   
     Route::post('/store','App\Http\Controllers\ActivityController@store'); 
     Route::get('/show','App\Http\Controllers\ActivityController@show'); 
-    Route::post('/insert-activity/{id}','App\Http\Controllers\ActivityController@insert_user_activities'); 
-    Route::get('/show-activity','App\Http\Controllers\ActivityController@show_user_activities'); 
+
+    Route::post('/insert_user_activity','App\Http\Controllers\ActivityController@insert_user_activities'); 
+    
+    Route::post('/select_trip_activities/{id}','App\Http\Controllers\ActivityController@select_trip_activities'); 
+    Route::get('/show_User_activity','App\Http\Controllers\ActivityController@show_user_activities'); 
+    Route::get('/show_activity','App\Http\Controllers\ActivityController@show_activities'); 
+    Route::get('/show_recommended_trips', [TripController::class,'show_recommended_trips']);
+    Route::get('/show_offered_trips', [TripController::class,'show_offered_trips']);
+
     Route::post('/addTrip', [TripController::class,'store']);
+
     Route::post('/addGov', [GovernementController::class,'addGov']);
     Route::post('/selectGov/{trip_id}/{gov_id}', [GovernementController::class,'selectGov']);
     Route::post('/addState', [StateController::class,'addState']);

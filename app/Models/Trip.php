@@ -25,6 +25,7 @@ class Trip extends Model
         'coutinent',
         'name_team',  
         'about',
+        'offer'
     ];
 
 // public function user()

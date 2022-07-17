@@ -49,7 +49,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|confirmed|min:6',
             'phone' => 'required|string|min:10',
-            'image' => 'required|image|mimes:png,jpeg,gif',
+            'image' => 'image|mimes:png,jpeg,gif',
             'Birth' => 'required|date',
         ]);
 
