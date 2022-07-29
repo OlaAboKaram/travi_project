@@ -47,6 +47,18 @@ class DateDayController extends Controller
         //
     }
 
+    public function delete_dateday($id)
+    {
+        $dateday = Dateday::find($id);
+        if (!$dateday) {
+            return response()->json(['error' => 'not found'], 404);
+        }
+        $result = $dateday->delete();
+        if ($result) {
+            return response()->json(['success' => 'the dateday was deleted'], 200);
+        }
+    }
+
     /**
      * Display the specified resource.
      *

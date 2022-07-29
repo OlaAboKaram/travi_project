@@ -75,7 +75,15 @@ class AreaController extends Controller
         $trip = Trip::find($trip_id);
         $area = Area::find($area_id);
         $trip->areas()->attach($area->id);
-        return "selected";
+        return response()->json(['success' => 'the area was selected'], 200);
+    }
+
+    public function deselectArea($trip_id,$area_id)
+    {
+        $trip = Trip::find($trip_id);
+        $area = Area::find($area_id);
+        $trip->areas()->detach($area->id);
+        return response()->json(['success' => 'the area was deselected'], 200);
     }
     /**
      * Display the specified resource.

@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use willvincent\Rateable\Rating;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -59,5 +60,8 @@ class User extends Authenticatable implements JWTSubject
     
     public function activities(){
         return $this-> belongsToMany(Activity::class, 'activity_user');
+    }
+    public function ratings(){
+        return $this-> hasMany(Rating::class);
     }
 }

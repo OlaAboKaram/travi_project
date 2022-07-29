@@ -34,19 +34,32 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function addEvent(Request $request,$id)
+    public function addEvent(Request $request, $id)
     {
-        $dateday = Dateday::find($id);
-        $uploadedImages=$request->image->store('public/uploads/');
-        $event=new Event();
-        $event->name=$request->input('name');
-        $event->description=$request->input('description');
-        $event->timing=$request->input('timing');
-        $event->image= $request->image->hashName();
+        $dateday = Dateday::findOrFail($id);
+        $uploadedImages = $request->image->store('public/uploads/');
+        $event = new Event();
+        $event->name = $request->input('name');
+        $event->description = $request->input('description');
+        $event->timing = $request->input('timing');
+        $event->image = $request->image->hashName();
         $event->save();
-        $dateday= $dateday->events()->save($event);
+        $dateday = $dateday->events()->save($event);
         return  $dateday;
     }
+
+    public function deleteEvent($id)
+    {
+        $event = Event::find($id);
+        if (!$event) {
+            return response()->json(['error' => 'not found'], 404);
+        }
+        $result = $event->delete();
+        if ($result) {
+            return response()->json(['success' => 'the event was deleted'], 200);
+        }
+    }
+
 
     /**
      * Display the specified resource.

@@ -37,11 +37,23 @@ class DailyProgramController extends Controller
     public function addDailyProgram(Request $request,$id)
     {
         $trip = Trip::find($id);
-        $dailyprogaram=new Dailyprogram();
-        $dailyprogaram->save();
-        $trip->dailyprogram_id=$dailyprogaram->id;
+        $dailyprogram=new Dailyprogram();
+        $dailyprogram->save();
+        $trip = $trip->dailyprograms()->save($dailyprogram);
         $trip->save();
         return $trip;
+    }
+
+    public function delete_dailyprogram($id)
+    {
+        $dailyprogram = Dailyprogram::find($id);
+        if (!$dailyprogram) {
+            return response()->json(['error' => 'not found'], 404);
+        }
+        $result = $dailyprogram->delete();
+        if ($result) {
+            return response()->json(['success' => 'the dailyprogram was deleted'], 200);
+        }
     }
     
 

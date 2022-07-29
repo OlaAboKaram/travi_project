@@ -12,6 +12,9 @@ class Dateday extends Model
         'name',
         'description',
         'day',
+        'dailyprogram_id'
+
+
 ];
 
     public function events(){

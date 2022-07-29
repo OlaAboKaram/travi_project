@@ -38,9 +38,25 @@ class ActivityController extends Controller
             'message' => 'User successfully selected activity',
         ], 201);
     }
+
+    public function delete_user_activities(Request $request)
+    {
+        $user = auth()->user();
+        $activities = array();
+        $activities = $request->input('activities');
+        foreach ($activities as $Thisactivity) {
+            $activity = Activity::where('name', 'LIKE', '%' . $Thisactivity . '%')->select('id')->get();
+            $user->activities()->detach($activity);
+        }
+        return response()->json([
+            'message' => 'User successfully deleted activities',
+        ], 201);
+    }
+
+
+
     public function select_trip_activities(Request $request, $id)
     {
-        // $user =auth()->user();
         $trip = Trip::find($id);
         $activities = array();
         $activities = $request->input('activities');
@@ -50,6 +66,21 @@ class ActivityController extends Controller
         }
         return response()->json([
             'message' => 'This activity was added to the trip',
+        ], 201);
+    }
+
+
+    public function deselect_trip_activities(Request $request, $id)
+    {
+        $trip = Trip::find($id);
+        $activities = array();
+        $activities = $request->input('activities');
+        foreach ($activities as $Thisactivity) {
+            $activity = Activity::where('name', 'LIKE', '%' . $Thisactivity . '%')->select('id')->get();
+            $trip->activities()->detach($activity);
+        }
+        return response()->json([
+            'message' => 'This activity was deleted to the trip',
         ], 201);
     }
 
@@ -67,7 +98,7 @@ class ActivityController extends Controller
         if ($allActivities->isEmpty()) {
             return response()->json([
                 'message' => 'there is no activities',
-            ], 201);
+            ], 404);
         } else {
             return $allActivities;
         }
@@ -93,12 +124,33 @@ class ActivityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function Admin_add_activity(Request $request)
     {
         $activity = new Activity;
         $activity->name = $request->input('name');
         $activity->save();
-        return response()->json(['message' => 'User successfully added activity']);
+        return response()->json(['message' => 'Admin successfully added activity', 201]);
+    }
+
+    public function Admin_update_activity(Request $request,$id)
+    {
+       
+        $activity =  Activity::findorfail($id);
+        $activity->update($request->all());
+         $activity->save();
+        return response()->json(['message' => 'Admin successfully updated activity'],200);
+    }
+
+    public function delete_activity($id)
+    {
+        $activity = Activity::find($id);
+        if (!$activity) {
+            return response()->json(['error' => 'not found'], 404);
+        }
+        $result = $activity->delete();
+        if ($result) {
+            return response()->json(['success' => 'the activity was deleted'], 201);
+        }
     }
 
     /**

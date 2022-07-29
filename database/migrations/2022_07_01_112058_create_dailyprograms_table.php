@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('datedays', function (Blueprint $table) {
+        Schema::create('dailyprograms', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('dailyprogram_id')->unsigned();
-            $table->enum('name',['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'])->default('Sunday');
-            $table->string('description');
-            $table->dateTime('day');
-            $table->timestamps();
+            $table->integer('trip_id')->unsigned()->nullable();
+            $table->foreign('trip_id')->references('id')->on('trips')->onDelete('cascade');
+            $table->timestamps();         
         });
     }
 
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('datedays');
+        Schema::dropIfExists('dailyprograms');
     }
 };
