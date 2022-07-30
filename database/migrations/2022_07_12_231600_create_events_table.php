@@ -15,12 +15,13 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('dateday_id')->unsigned()->nullable();;
-    
+           
             $table->string('name');
             $table->string('description');
             $table->string('timing');
             $table->string('image');
+            $table->integer('dateday_id')->unsigned()->nullable();
+            $table->foreign('dateday_id')->references('id')->on('datedays')->nullOnDelete()->onDelete('cascade');
             $table->timestamps();
 
         });

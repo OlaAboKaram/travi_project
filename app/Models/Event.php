@@ -13,7 +13,9 @@ class Event extends Model
         'name',
         'description',
         'timing',
-        'image'
+        'image',
+        'dateday_id'
+       
 ];
 
 

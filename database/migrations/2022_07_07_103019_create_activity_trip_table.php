@@ -16,7 +16,11 @@ return new class extends Migration
         Schema::create('activity_trip', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('activity_id')->unsigned();
+            $table->foreign('activity_id')->references('id')->on('activities')
+            ->onDelete('cascade');
             $table->integer('trip_id')->unsigned();
+            $table->foreign('trip_id')->references('id')->on('trips')
+            ->onDelete('cascade');
         });
     }
 

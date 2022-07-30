@@ -1,14 +1,17 @@
 <?php
 
 namespace App\Models;
+use Conner\Likeable\Likeable;
+use willvincent\Rateable\Rateable;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Trip extends Model
 {
-    use HasFactory;
-    protected $fillable = [
+  use HasFactory, Likeable, Rateable;
+  protected $fillable = [
         'name',
         'age',
         'type',
@@ -37,10 +40,7 @@ class Trip extends Model
 // {
 //   return $this->belongsTo( governorate::class);
 // }
-public function daily_program()
-{
-  return $this->hasOne(Daily_Program::class);
-}
+
 // public function governorate()
 // {
 //   return $this->hasMany(Governorate_Trip::class);
