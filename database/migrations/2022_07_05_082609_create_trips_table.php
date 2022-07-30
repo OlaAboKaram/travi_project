@@ -17,6 +17,7 @@ return new class extends Migration
             $table->increments('id');
             
             $table->integer('state_id')->unsigned()->nullable();
+            $table->integer('activity_id')->unsigned()->nullable();
         $table->integer('governement_id')->unsigned()->nullable();
          $table->integer('area_id')->unsigned()->nullable();
          $table->integer('user_id')->unsigned()->nullable();
@@ -30,6 +31,8 @@ return new class extends Migration
             $table->enum('age',['10-20','20-30','30-40','40-50','50-60','60-70'])->default('20-30');
            $table->enum('type',['family','شباب','جامعية','مدرسة ','بنات'])->default('family');
             $table->float('price');
+            $table->float('offer');
+
             
             $table->date('start_date');
             $table->date('expiry_date');
