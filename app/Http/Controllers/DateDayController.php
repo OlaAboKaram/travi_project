@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Dailyprogram;
 use App\Models\Dateday;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+
 
 class DateDayController extends Controller
 {
@@ -13,6 +15,11 @@ class DateDayController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+    }
     public function index()
     {
         //
@@ -34,18 +41,71 @@ class DateDayController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function addDay(Request $request,$id)
+    public function addDay(Request $request, $id)
     {
         $dailyprogram = Dailyprogram::find($id);
-        $dateday=new Dateday();
-        $dateday->name=$request->input('name');
-        $dateday->description=$request->input('description');
-        $dateday->day=$request->input('day');
+
+        if (!$dailyprogram) {
+            return response()->json(['error' => 'not found'], 404);
+        }
+        try {
+            $dateday = new Dateday();
+            $request->validate([
+                'name' => 'required|string|max:50',
+                'description' => 'required|string|max:255',
+                'day' => 'required|date',
+            ]);
+            $dateday->name = $request->input('name');
+            $dateday->description = $request->input('description');
+            $dateday->day = $request->input('day');
+        } catch (ValidationException $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+
+
         $dateday->save();
-        $dailyprogram= $dailyprogram->datedays()->save($dateday);
-        return  $dateday;
+        $dailyprogram = $dailyprogram->datedays()->save($dateday);
+        return response()->json(['success' => 'the day was added', 'day' => $dateday], 201);
+
         //
     }
+
+    public function updateDay(Request $request, $id, $day_id)
+    {
+        $dailyprogram = Dailyprogram::find($id);
+        $dateday = Dateday::find($day_id);
+        if (!$dailyprogram || !$dateday) {
+            return response()->json(['error' => 'not found'], 404);
+        }
+        try {
+            $request->validate([
+                'name' => 'string|max:50',
+                'description' => 'string|max:255',
+                'day' => 'date',
+            ]);
+
+            //  $dateday->update($request->all());
+        } catch (ValidationException $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+
+        $input = $request->all();
+        $dateday->fill($input)->save();
+        $dailyprogram = $dailyprogram->datedays()->save($dateday);
+        return response()->json(['success' => 'the day was updated', 'day' => $dateday], 201);
+
+        //
+    }
+
+    public function show_days($id)
+    {
+        $dailyprogram = Dailyprogram::find($id);
+        if (!$dailyprogram) {
+            return response()->json(['error' => 'not found'], 404);
+        }
+        return  $dailyprogram->datedays;
+    }
+
 
     public function delete_dateday($id)
     {

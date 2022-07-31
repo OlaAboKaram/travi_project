@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dailyprogram;
-use App\Models\Trip;
+use App\Models\Dateday;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
-class DailyProgramController extends Controller
+
+class UserDateDayController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +18,7 @@ class DailyProgramController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:admin');
+        $this->middleware('auth:api');
     }
     public function index()
     {
@@ -39,39 +41,26 @@ class DailyProgramController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function addDailyProgram(Request $request,$id)
-    {
-        $trip = Trip::find($id);
-        if (!$trip) {
-            return response()->json(['error' => 'not found'], 404);
-        }
-        $dailyprogram=new Dailyprogram();
-        $dailyprogram->save();
-        $trip = $trip->dailyprograms()->save($dailyprogram);
-        $trip->save();
-        return response()->json(['success' => 'the daily program was created'], 200);
-    }
+    
 
-    public function delete_dailyprogram($id)
+
+    public function show_days($id)
     {
         $dailyprogram = Dailyprogram::find($id);
         if (!$dailyprogram) {
             return response()->json(['error' => 'not found'], 404);
         }
-        $result = $dailyprogram->delete();
-        if ($result) {
-            return response()->json(['success' => 'the dailyprogram was deleted'], 200);
-        }
+        return  $dailyprogram->datedays;
     }
-    
+
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Date_Day  $date_Day
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Dateday $date_Day)
     {
         //
     }
@@ -79,10 +68,10 @@ class DailyProgramController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Date_Day  $date_Day
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Dateday $date_Day)
     {
         //
     }
@@ -91,10 +80,10 @@ class DailyProgramController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Date_Day  $date_Day
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Dateday $date_Day)
     {
         //
     }
@@ -102,10 +91,10 @@ class DailyProgramController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Date_Day  $date_Day
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Dateday $date_Day)
     {
         //
     }

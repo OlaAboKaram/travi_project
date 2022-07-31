@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Dateday;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+
 
 class EventController extends Controller
 {
@@ -13,6 +15,11 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+    }
     public function index()
     {
         //
@@ -36,16 +43,28 @@ class EventController extends Controller
      */
     public function addEvent(Request $request, $id)
     {
-        $dateday = Dateday::findOrFail($id);
-        $uploadedImages = $request->image->store('public/uploads/');
-        $event = new Event();
-        $event->name = $request->input('name');
-        $event->description = $request->input('description');
-        $event->timing = $request->input('timing');
-        $event->image = $request->image->hashName();
+        try {
+            $request->validate([
+                'name' => 'required|string|max:50',
+                'description' => 'required|string|max:50',
+                'timing' => 'required|string|max:50',
+                'image' => 'required|image|max:2000',
+            ]);
+            $dateday = Dateday::findOrFail($id);
+            $request->image->store('public/uploads/');
+            $event = new Event();
+            $event->name = $request->input('name');
+            $event->description = $request->input('description');
+            $event->timing = $request->input('timing');
+            $event->image = $request->image->hashName();
+        } catch (ValidationException $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+
         $event->save();
         $dateday = $dateday->events()->save($event);
-        return  $dateday;
+        return response()->json(['message' => 'the event was add successfully', 'event'=> $dateday], 404);
+
     }
 
     public function deleteEvent($id)
