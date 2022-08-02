@@ -256,13 +256,24 @@ class TripController extends Controller
 
     public function register($trip_id,$user_id){
        $trip = Trip::find($trip_id);
+      $user = user::find($user_id);
+      
+      
+       if($trip->rest==0)
+       {
+        return ["result"=>" Can't be recorded because the number is complete"];
+       }
+    
        $trip->rest--;
-       
        $trip->update();
-       $user = user::find($user_id);
+      // $user = user::find($user_id);
        $trip->users()->attach($user_id);
-       $user->trips()->attach($trip_id);
-   return  $trip->rest ;
+      // $user->trips()->attach($trip_id);
+      //  if(!$trip|!$user)
+      //  {
+      //   return ["result"=>" not find"];
+      //  }
+       return ["result"=>"correct registration"] ;
     }
     public function registerTrip($trip_id){
       $trip=Trip::find($trip_id);
@@ -272,9 +283,9 @@ class TripController extends Controller
       $user=User::find($user_id);
       return $user->trips;
     }
-     public function registerRest($trip_id){
-      $trip = Trip::find($trip_id);
-      return  $trip->rest ;
-     }
+    //  public function registerRest($trip_id){
+    //   $trip = Trip::find($trip_id);
+    //   return  $trip->rest ;
+    //  }
 
 }
