@@ -15,12 +15,6 @@ return new class extends Migration
     {
         Schema::create('trips', function (Blueprint $table) {
             $table->increments('id');
-            
-            $table->integer('state_id')->unsigned()->nullable();
-            $table->integer('activity_id')->unsigned()->nullable();
-        $table->integer('governement_id')->unsigned()->nullable();
-         $table->integer('area_id')->unsigned()->nullable();
-         $table->integer('user_id')->unsigned()->nullable();
           $table->integer('dailyprogram_id')->unsigned();    
       
         //    $table->unsignedBigInteger(column:'state-id');
@@ -41,9 +35,9 @@ return new class extends Migration
            $table->date('start_trip');
            $table->date('end_trip');
 
-           $table->integer('rest')->nullable();
+           $table->integer('rest');
            $table->integer('total');
-            $table->string('image')->nullable();
+            $table->string('image');
            $table->integer('reiteration');
           
             $table->enum('coutinent',['africa','antarctica','asia','australia','europe','north america','south america'])->default('africa');

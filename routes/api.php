@@ -16,6 +16,7 @@ use App\Http\Controllers\StateController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminActivityController;
+use App\Http\Controllers\UserTripController;
 
 
 
@@ -51,9 +52,25 @@ Route::group(['prefix' => 'admin','middleware' =>'assign.guard:admin'],function 
     Route::delete('/delete_dateday/{id}', [DatedayController::class, 'delete_dateday']);
     Route::post('/addEvent/{id}', [EventController::class, 'addEvent']);
     Route::delete('/deleteEvent/{event_id}', [EventController::class, 'deleteEvent']);
+    Route::get('/show_recommended_trips', [UserTripController::class, 'show_recommended_trips']);
 
+
+    Route::post('/register/{trip_id}', [TripController::class,'register']);
+    Route::post('/registerTrip/{trip_id}', [TripController::class,'registerTrip']);
+    Route::post('/registerUser', [TripController::class,'registerUser']);
+
+    Route:: get('/showTrip',[TripController::class,'showTrip']);
+    Route:: get('/listAll',[TripController::class,'listAlltrip']);
+    Route:: get('/searchName/{string}',[TripController::class,'search_name']);
+    Route:: get('/searchNameTeam/{string}',[TripController::class,'search_name_team']);
+    Route:: get('/searchPrice/{int}',[TripController::class,'search_price']);
+    Route:: get('/searchType/{int}',[TripController::class,'search_type']);
+    Route:: get('/searchAge/{int}',[TripController::class,'search_age']);
+    Route:: get('/searchCoutinent/{int}',[TripController::class,'search_coutinent']);
+    Route:: get('/search/{int}',[TripController::class,'search']);
+  });
     
-});
+
 
 Route::group(['prefix' => 'user','middleware' => ['assign.guard:users','jwt.auth']],function ($router)
 {
@@ -72,7 +89,7 @@ Route::group([
   //  Route::post('/Admin_add_activity', 'App\Http\Controllers\ActivityController@Admin_add_activity');
   //  Route::get('/show', 'App\Http\Controllers\ActivityController@show');
     Route::post('/like-trip/{id}', [TripController::class, 'likePost'])->name('like.trip');
-    Route::post('/addRate/{id}', [TripController::class, 'addRate'])->name('rate.trip');
+    Route::post('/addRate/{id}', [UserTripController::class, 'addRate'])->name('rate.trip');
     Route::get('/home', [TripController::class, 'home'])->name('home');
     Route::post('/delete_user_activities', 'App\Http\Controllers\ActivityController@delete_user_activities');
     Route::post('/insert_user_activity', 'App\Http\Controllers\ActivityController@insert_user_activities');
@@ -83,7 +100,7 @@ Route::group([
     Route::post('/select_trip_activities/{id}', 'App\Http\Controllers\ActivityController@select_trip_activities');
     Route::get('/show_User_activity', 'App\Http\Controllers\ActivityController@show_user_activities');
     Route::get('/show_activity', 'App\Http\Controllers\ActivityController@show_activities');
-    Route::get('/show_recommended_trips', [TripController::class, 'show_recommended_trips']);
+  //  Route::get('/show_recommended_trips', [TripController::class, 'show_recommended_trips']);
     Route::get('/show_offered_trips', [TripController::class, 'show_offered_trips']);
     Route::post('/addTrip', [TripController::class, 'store']);
     Route::post('/addGov', [GovernementController::class, 'addGov']);

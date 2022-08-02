@@ -66,7 +66,7 @@ class AreaController extends Controller
         $area->city = $request->city;
         $area->description = $request->description;
 
-
+        $request->image1->store('public/uploads/');
         $area->image1 = $request->image1->hashName();
         $area->image2 = $request->image2->hashName();
         $area->image3 = $request->image3->hashName();
