@@ -13,12 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('area_trip', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->unsigned();
             $table->integer('area_id')->unsigned();
-            $table->integer('trip_id')->unsigned();
-            
+            $table->foreign('area_id')->references('id')->on('areas')
+                ->onDelete('cascade');
+            $table->integer('parent_id')->unsigned()->nullable();
+            $table->text('body');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('area_trips');
+        Schema::dropIfExists('comments');
     }
 };

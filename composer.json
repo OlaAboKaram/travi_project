@@ -6,10 +6,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "dnsimmons/openweather": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.11",
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
+        "rakibdevs/openweather-laravel-api": "^1.7",
         "rtconner/laravel-likeable": "^3.2",
         "tymon/jwt-auth": "^1.0",
         "willvincent/laravel-rateable": "^3.0"

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('country');
             $table->string('city');
+            $table->double('latitude'); 
+            $table->double('longitude'); 
             $table->string('image1')->nullable();
             $table->string('image2')->nullable();
             $table->string('image3')->nullable();

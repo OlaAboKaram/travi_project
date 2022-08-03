@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec80ca38ae4988f40fa27e689cf59905",
+    "content-hash": "287c0444e8b9ba91d8688b09a6ba8623",
     "packages": [
         {
             "name": "brick/math",
@@ -140,6 +140,53 @@
                 "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.1"
             },
             "time": "2021-08-13T13:06:58+00:00"
+        },
+        {
+            "name": "dnsimmons/openweather",
+            "version": "1.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dnsimmons/openweather.git",
+                "reference": "83c6e530d21cd154231ee3eb8c719fdc30c69031"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dnsimmons/openweather/zipball/83c6e530d21cd154231ee3eb8c719fdc30c69031",
+                "reference": "83c6e530d21cd154231ee3eb8c719fdc30c69031",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Dnsimmons\\OpenWeather\\OpenWeatherServiceProvider"
+                    ],
+                    "aliases": {
+                        "OpenWeather": "Dnsimmons\\OpenWeather\\OpenWeather"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dnsimmons\\OpenWeather\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Dave Simmons",
+                    "email": "hello@dsimmons.me"
+                }
+            ],
+            "description": "OpenWeather is a Laravel package simplifying working with the free Open Weather Map APIs.",
+            "support": {
+                "issues": "https://github.com/dnsimmons/openweather/issues",
+                "source": "https://github.com/dnsimmons/openweather/tree/1.0.7"
+            },
+            "time": "2021-12-27T01:45:14+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -2810,6 +2857,64 @@
                 "source": "https://github.com/bobthecow/psysh/tree/v0.11.8"
             },
             "time": "2022-07-28T14:25:11+00:00"
+        },
+        {
+            "name": "rakibdevs/openweather-laravel-api",
+            "version": "v1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rakibdevs/openweather-laravel-api.git",
+                "reference": "241f921b4612127dee412f26326bd033cdb0d0d9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rakibdevs/openweather-laravel-api/zipball/241f921b4612127dee412f26326bd033cdb0d0d9",
+                "reference": "241f921b4612127dee412f26326bd033cdb0d0d9",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.3|^7.0",
+                "php": "^7.2|^7.3|^7.4|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0|^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "RakibDevs\\Weather\\WeatherServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "RakibDevs\\Weather\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Md. Rakibul Islam",
+                    "email": "rakib1708@gmail.com",
+                    "homepage": "https://rakibul.dev"
+                }
+            ],
+            "description": "Laravel package to connect https://openweathermap.org/ to get customized weather data for any location on the globe immediately",
+            "keywords": [
+                "api",
+                "laravel",
+                "open-weather",
+                "weather"
+            ],
+            "support": {
+                "issues": "https://github.com/rakibdevs/openweather-laravel-api/issues",
+                "source": "https://github.com/rakibdevs/openweather-laravel-api/tree/v1.7"
+            },
+            "time": "2022-07-06T04:09:14+00:00"
         },
         {
             "name": "ralouphie/getallheaders",

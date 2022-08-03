@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Dailyprogram;
 use App\Models\Dateday;
+use App\Models\Trip;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 
 class DateDayController extends Controller
@@ -100,15 +102,23 @@ class DateDayController extends Controller
     public function show_days($id)
     {
         $dailyprogram = Dailyprogram::find($id);
+        $tripDailyProgram = $dailyprogram->trip_id;
+        $trip = Trip::find($tripDailyProgram);
+      //  $tripdays = $trip->end_trip - $trip->start_trip;
+        $start_trip =Carbon::parse($trip->start_trip);
+        $end_trip =Carbon::parse($trip->end_trip);
+        $tripdays = $start_trip ->diffInDays($end_trip, false);
+
         if (!$dailyprogram) {
             return response()->json(['error' => 'not found'], 404);
         }
-        return  $dailyprogram->datedays;
+        return response()->json(['daysNumber' => $tripdays, 'days' => $dailyprogram->datedays], 200);
     }
 
 
     public function delete_dateday($id)
     {
+
         $dateday = Dateday::find($id);
         if (!$dateday) {
             return response()->json(['error' => 'not found'], 404);
