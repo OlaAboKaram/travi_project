@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Trip;
 use App\Models\Governement;
 use App\Models\Activity;
+use Illuminate\Validation\ValidationException;
+
 use App\Models\User;
 
 
@@ -12,6 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Support\Facades\Auth;
 use willvincent\Rateable\Rateable;
+use dnsimmons\openweather\OpenWeather;
+use RakibDevs\Weather\Weather;
+
 use App\Models\Rating;
 use willvincent\Rateable\Rating as RateableRating;
 
@@ -47,6 +52,29 @@ class TripController extends Controller
     public function store(Request $request)
     {
 
+        try {
+            $request->validate([
+                'name' => 'required|string|max:50',
+                'age' => 'required|string|max:50',
+                'type' => 'required|string|max:50',
+                'start_date' => 'required|date',
+                'expiry_date' => 'required|date',
+                'start_trip' => 'required|date',
+                'start_date' => 'required|date',
+                'end_trip' => 'required|date',
+                'total' => 'required|integer',
+                'start_date' => 'required|date',
+                'image' => 'required|image',
+                'coutinent' => 'required|string',
+                'reiteration' => 'required|integer',
+                'name_team' => 'required|string',
+                'about' => 'required|string|max:255|min:120',
+                'offer' => 'required|integer'
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+        $request->image->store('public/uploads/');
         $trip = new Trip;
         $trip->name = $request->name;
         $trip->age = $request->age;
@@ -63,10 +91,10 @@ class TripController extends Controller
         $trip->name_team = $request->name_team;
         $trip->about = $request->about;
         $trip->offer = $request->offer;
-
+        $trip->image = $request->image->hashName();
+        $trip->rest = $trip->total;
         $trip->save();
-
-        return  $trip;
+        return response()->json(['message' => 'admin successfully added trip', 'trip' => $trip]);
     }
 
     /**
@@ -75,6 +103,16 @@ class TripController extends Controller
      * @param  \App\Models\Trip  $trip
      * @return \Illuminate\Http\Response
      */
+
+     public function show_trip_details($id){
+        $trip= Trip::find($id);
+        $result[]=$trip;
+        $tripArea=$trip->areas;
+        $result[]=$tripArea;
+        return response()->json([$trip]);
+
+
+     }
     public function show_recommended_trips()
     {
         $user = auth()->user();
@@ -107,8 +145,7 @@ class TripController extends Controller
     {
         $trip = Trip::find($id);
         $user = auth()->user();
-        $trip->like($user);
-        $trip->liked($user);
+        $trip->disliked($user);
         $trip->save();
         return $trip->likeCount;
     }
@@ -187,37 +224,164 @@ class TripController extends Controller
         return $offerdTrips;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Trip  $trip
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Trip $trip)
+    //////////////////////////////////////////
+    public function showTrip(Request $request)
     {
-        //
+        $trip = Trip::where('start_trip', '>', today())->orderBY('start_trip', 'asc')->get();
+        return $trip;
+    }
+    public function listAlltrip(Request $request)
+    {
+        if ($request->sortby) {
+            $sortby = $request->sortby;
+            $trip = Trip::where('start_trip', '>', today())->orderBY($sortby, 'desc')->withCount('activities', 'daily_program')->get();
+
+            return $this->responseData($trip, 'successfully fetched');
+        }
+        $trip  = Trip::latest()->where('start_trip', '>', today())->withCount('activities', 'daily_program')->get(); //,'comment','like'
+        $trip_invalid = Trip::where('start_trip', '<', today());
+        $trip_invalid->delete();
+        return $this->responseData($trip, 'successfully fetched');
+        // return response()->json(['message' => 'User successfully select state']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Trip  $trip
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Trip $trip)
+    public function search_name($name)
     {
-        //
+        //   $validate=Validator::make($request->all(), ['name'=>'required']);
+        //   // if($validate->fails())
+        //   // {
+        //   //   return $this->responseError($validate->errors());
+        //   // }
+
+        //   $trip =Trip::where('name',$request->name)->first();
+        //   // if(!$trip)
+        //   // {
+        //   //   return $this->responseError('trip not found');
+        //   // }
+        //   $trip1 =Trip::where('name',$request->name)->get();
+
+        //   return $this->responseData($trip1,'successfully');
+        $trip = Trip::where("name", "like", "%" . $name . "%")->where('start_trip', '>', today())->Orderby('start_trip', 'asc')->get();
+        // $sortby=$trip->sortby;
+        // $trip1=Trip::Orderby($sortby,'desc');
+        //return $this->responseData($trip,'successfully');
+        //return response()->json(['message' => 'User successfully select state']);
+        return $trip;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Trip  $trip
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Trip $trip)
+    public function search_price($price)
     {
-        //
+        $trip = Trip::where("price", $price)->round($price, 2)->where('start_trip', '>', today())->Orderby('start_trip', 'asc')->get();
+        return $trip;
     }
+    public function search_name_team($name_team)
+    {
+        $trip = Trip::where("name_team", "like", "%" . $name_team . "%")->where('start_trip', '>', today())->Orderby('start_trip', 'asc')->get();
+        return $trip;
+    }/*
+   public function search_type($type)
+   {
+     $trip =Trip::where("type",$type)->where('start_trip','>',today())->Orderby('start_trip','asc')->get();
+    
+    // return response()->json(['message' => 'User successfully select governement']);
+    if(!$trip)
+     {
+      return response()->json(['message' => 'User successfully select governement']);
+    }
+
+    return $trip;
+   // return response($trip)->json(['kff']);
+     /*
+     switch($type){
+     case('family'):
+
+     }   
+   }*/
+    /*
+   public function search_age($age)
+   {
+     $trip =Trip::where("age",$age)->where('start_trip','>',today())->Orderby('start_trip','asc')->get();
+   return $trip;
+   }
+   public function search_coutinent($coutinent)
+   {
+     $trip =Trip::where("coutinent",$coutinent)->where('start_trip','>',today())->Orderby('start_trip','asc')->get();
+   return $trip;
+   }*/
+    public function search($request)
+    {
+        // $trip=Trip::where('start_trip','>',today())->Orderby('start_trip','asc')->get();
+        //  if(where("age",$request)){
+        // return $trip;
+        //  $trip =Trip::where("age",$request)->where('start_trip','>',today())->Orderby('start_trip','asc')->get() ;
+        //    $trip =Trip::where("type",$request)->where('start_trip','>',today())->Orderby('start_trip','asc')->get();
+        $trip = Trip::where("name", "like", "%" . $request . "%")
+            ->orwhere("name_team", "like", "%" . $request . "%")
+            ->orwhere("price", "like", "%" . $request)
+            ->orwhere("type", "like", "%" . $request . "%")
+            ->orwhere("age", "like", "%" . $request . "%")
+            ->orwhere("coutinent", "like", "%" . $request . "%")
+            ->where('start_trip', '>', today())
+            ->Orderby('start_trip', 'asc')
+            ->get();
+        //  $okfj=$trip->id;
+        //  if (!$okfj)
+        //  {
+        //    return ["result"=>" trip not trip not delete "];
+        //  }
+        // return response()->view('$trip', compact('variableName'));
+        // return $trip =Trip::where('start_trip','>',today())->Orderby('start_trip','asc')->get();
+        // return $this->responseData($trip,'successfully');
+        //  return response()->json(['message' => 'User successfully select state']);
+        // return response()->json($trip->getResponse()); 
+        if ($trip->isEmpty()) {
+            return ["result" => " trip not trip not delete "];
+        }
+        return $trip;
+    }
+
+
+    public function register($trip_id)
+    {
+        $trip = Trip::find($trip_id);
+        $user = auth()->user();
+
+
+        if ($trip->rest == 0) {
+            return ["result" => " Can't be recorded because the number is complete"];
+        }
+
+        $trip->rest--;
+        $trip->update();
+        // $user = user::find($user_id);
+        $trip->users()->attach($user->id);
+        // $user->trips()->attach($trip_id);
+        //  if(!$trip|!$user)
+        //  {
+        //   return ["result"=>" not find"];
+        //  }
+        return ["result" => "correct registration"];
+    }
+    public function registerTrip($trip_id)
+    {
+        $trip = Trip::find($trip_id);
+        return $trip->users;
+    }
+    public function registerUser()
+    {
+        $user = auth()->user();
+        return $user->trips;
+    }
+
+    public function weather()
+    {
+        $wt = new Weather();
+        $info = $wt->getCurrentByZip('94040,us');
+    }
+    //  public function registerRest($trip_id){
+    //   $trip = Trip::find($trip_id);
+    //   return  $trip->rest ;
+    //  }
+
+
 }

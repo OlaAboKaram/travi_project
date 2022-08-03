@@ -61,6 +61,10 @@ class Trip extends Model
 public function activities(){
   return $this-> belongsToMany(Activity::class,'activity_trip');
 }
+
+public function users(){
+  return $this-> belongsToMany(Users::class,'trip_user');
+}
 public function areas(){
   return $this-> belongsToMany(Area::class,'area_trip');
 }

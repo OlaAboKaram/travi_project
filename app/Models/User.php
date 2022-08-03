@@ -61,6 +61,9 @@ class User extends Authenticatable implements JWTSubject
     public function activities(){
         return $this-> belongsToMany(Activity::class, 'activity_user');
     }
+    public function trips(){
+        return $this-> belongsToMany(Trip::class, 'trip_user');
+    }
     public function ratings(){
         return $this-> hasMany(Rating::class);
     }
