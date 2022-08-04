@@ -74,7 +74,9 @@ class TripController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
-        $request->image->store('public/uploads/');
+        //   $imageName = time().'.'.$request->image->getClientOriginalExtension();
+        //   $request->image->move(public_path('images'), $imageName);
+
         $trip = new Trip;
         $trip->name = $request->name;
         $trip->age = $request->age;
@@ -93,6 +95,12 @@ class TripController extends Controller
         $trip->offer = $request->offer;
         $trip->image = $request->image->hashName();
         $trip->rest = $trip->total;
+        //image//
+        $file = $request->file('image');
+        $filename = date('YmdHi') . $file->getClientOriginalName();
+        $file->move(public_path('public/Image'), $filename);
+        $trip['image'] = $filename;
+        //
         $trip->save();
         return response()->json(['message' => 'admin successfully added trip', 'trip' => $trip]);
     }
@@ -136,27 +144,27 @@ class TripController extends Controller
     public function home()
     {
         $user = auth()->user();
-        $trips = Trip::all();
+        $trips = Trip::where('start_date', '>', today())->get();
+        $triparray = array();
         foreach ($trips as $trip) {
             if ($trip->offer != 0)
                 $offerdTrips = $trip;
         }
         $result[] = $user;
         $result[] = $offerdTrips;
-
-
         $userActivities = $user->activities()->get();
         foreach ($userActivities as $useractivity) {
             foreach ($trips as $tripActivity) {
                 foreach ($tripActivity->activities()->get() as $tripac) {
-                    if ($useractivity->pivot->activity_id == $tripac->pivot->activity_id) {
+                    if ($useractivity->pivot->activity_id = $tripac->pivot->activity_id) {
                         $newTrip_id = $tripac->pivot->trip_id;
-                        $thisTrip = Trip::find($newTrip_id);
+                        $triparray = $thisTrip = Trip::find($newTrip_id);
                     }
                 }
             }
         }
 
+        // $result[] = $thisTrip;
         foreach ($trips as $rateTrip) {
             $rateResult[] = $rateTrip->getAverageRatingAttribute();
         }
@@ -166,10 +174,8 @@ class TripController extends Controller
                 $highRated = $rateTrip;
             }
         }
-
         $result[] = $highRated;
-        $result[] = $thisTrip;
-        return $result;
+        return response()->json(['user' => $user, '$offerdTrips' => $offerdTrips, 'recommended' => $triparray, 'best trip' => $highRated], 200);
     }
 
     public function delete_trip($id)

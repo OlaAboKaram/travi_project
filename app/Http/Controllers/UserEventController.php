@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Dateday;
 use App\Models\Event;
+use App\Models\Dailyprogram;
+
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 
-class EventController extends Controller
+class UserEventController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,7 +20,7 @@ class EventController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:admin');
+        $this->middleware('auth:api');
     }
     public function index()
     {
@@ -72,12 +74,25 @@ class EventController extends Controller
     }
 
     public function show_event_details(Request $request, $id){
-        $dateday = Dateday::findOrFail($id);
+        $dailyprogram=Dailyprogram::find($id);
+        $dayEvents=array();
+        $days=$dailyprogram->datedays;
+        foreach($days as $day){
+            $dayEvents[]=$day->events;
+        }
+        return $days;
+       // $dateday = Dateday::find($id);
+      // $dayEvents= $dateday->events;
+
+      /*  return $dailyprogramEvents= $dailyprogram->events();
         $request->validate([
             'date' => 'required|date_format:Y-m-d',
         ]);
         $date=$request->input('date');
-        return $dateday= Dateday::where('id','=',$id)->where('day','=',$date)->get();
+        foreach($dailyprogramEvents as $dailyprogramEvents){
+            $dateday= Dateday::where('day','=',$date)->get();
+        }*/
+       
     }
 
     public function deleteEvent($id)

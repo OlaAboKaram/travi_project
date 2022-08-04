@@ -73,19 +73,19 @@ class UserTripController extends Controller
         $tripAreas = $trip->areas;
         foreach ($tripAreas as $tripArea) {
             $arealike[] = $tripArea->likeCount;
-
         }
 
 
         return response()->json([$result]);
     }
 
-public function show_Liked_trips(){
-    $user=auth()->user()->id;
-   return Trip::whereLikedBy($user) // find only posts where user liked them
-    ->with('likeCounter') // highly suggested to allow eager load
-    ->get();
-}
+    public function show_Liked_trips()
+    {
+        $user = auth()->user()->id;
+        return Trip::whereLikedBy($user) // find only posts where user liked them
+            ->with('likeCounter') // highly suggested to allow eager load
+            ->get();
+    }
 
     public function show_recommended_trips()
     {
@@ -117,7 +117,8 @@ public function show_Liked_trips(){
         $trip->save();
         return $trip->likeCount;
     }
-    public function likesNum($id){
+    public function likesNum($id)
+    {
         $trip = Trip::find($id);
         return $trip->likeCount;
     }
@@ -201,7 +202,7 @@ public function show_Liked_trips(){
             }
         }
         $result[] = $highRated;
-        return response()->json(['user' => $user, '$offerdTrips' => $offerdTrips, 'recommended' => $triparray, 'best trip' => $highRated], 404);
+        return response()->json(['user' => $user, '$offerdTrips' => $offerdTrips, 'recommended' => $triparray, 'best trip' => $highRated], 200);
     }
 
     public function delete_trip($id)
@@ -233,7 +234,7 @@ public function show_Liked_trips(){
         $trips = Trip::where('start_date', '>', today())->get();
         $trip = Trip::paginate(4);
 
-            $rateResult[] = Trip::withAvg('ratings', 'rating')->orderBy('ratings_avg_rating', 'desc')->take(5)->get();;
+        $rateResult[] = Trip::withAvg('ratings', 'rating')->orderBy('ratings_avg_rating', 'desc')->take(5)->get();;
 
         return $rateResult;
     }

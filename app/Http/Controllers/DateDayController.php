@@ -57,7 +57,6 @@ class DateDayController extends Controller
                 'day' => 'required|date',
             ]);
             $dateday->description = $request->input('description');
-            $dateday->day = $request->input('day');
             $day = Carbon::createFromFormat('Y-m-d',  $dateday->day)->format('l');
             $dateday->name = $day;
         } catch (ValidationException $e) {

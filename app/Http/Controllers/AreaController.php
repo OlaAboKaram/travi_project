@@ -77,9 +77,8 @@ class AreaController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
-        $request->image1->store('public/uploads/');
-        $request->image2->store('public/uploads/');
-        $request->image3->store('public/uploads/');
+
+
         $area = new Area;
         $area->name = $request->name;
         $area->country = $request->country;
@@ -87,9 +86,26 @@ class AreaController extends Controller
         $area->description = $request->description;
         $area->latitude = $request->latitude;
         $area->longitude = $request->longitude;
-        $area->image1 = $request->image1->hashName();
-        $area->image2 = $request->image2->hashName();
-        $area->image3 = $request->image3->hashName();
+        //image1//
+        $file = $request->file('image1');
+        $filename1 = date('YmdHi') . $file->getClientOriginalName();
+        $file->move(public_path('public/Image'), $filename1);
+        $area['image1'] = $filename1;
+        //
+
+        //image2//
+        $file = $request->file('image2');
+        $filename2 = date('YmdHi') . $file->getClientOriginalName();
+        $file->move(public_path('public/Image'), $filename2);
+        $area['image2'] = $filename2;
+        //
+
+        //image3//
+        $file = $request->file('image3');
+        $filename3 = date('YmdHi') . $file->getClientOriginalName();
+        $file->move(public_path('public/Image'), $filename3);
+        $area['image3'] = $filename3;
+        //
         $area->save();
         return response()->json([
             'message' => 'admin successfully added an area', 'area' => $area
@@ -142,18 +158,18 @@ class AreaController extends Controller
         ], 201);
     }
 
-    public function show_areas(){
-        $areas=Area::all();
-        $areaInfo[]=  $areas;
+    public function show_areas()
+    {
+        $areas = Area::all();
+        $areaInfo[] =  $areas;
         foreach ($areas as $area) {
-            $arealike= $area->likeCount;
-            $areaInfo[]= $area->comments;
-
+            $arealike = $area->likeCount;
+            $areaInfo[] = $area->comments;
         }
 
         if (!$area) {
             return response()->json(['error' => 'no areas'], 404);
-        }else{
+        } else {
             return $areaInfo;
         }
     }
@@ -182,17 +198,18 @@ class AreaController extends Controller
         $trip->areas()->attach($area->id);
         return response()->json(['success' => 'the area was selected'], 200);
     }
-    public function show_area_like($id){
-         $likes = DB::table('likeable_likes')->where('likeable_id', '=', $id)->get();
-        foreach($likes as $like){
-            $users[]=$like->user_id;
+    public function show_area_like($id)
+    {
+        $likes = DB::table('likeable_likes')->where('likeable_id', '=', $id)->get();
+        foreach ($likes as $like) {
+            $users[] = $like->user_id;
         }
-        $userinfo=array();
-        foreach($users as $user){
-             $userinfo[]=User::where('id', '=', $user)->get()->pluck('id','image');
+        $userinfo = array();
+        foreach ($users as $user) {
+            $userinfo[] = User::where('id', '=', $user)->get()->pluck('id', 'image');
         }
         return $userinfo;
-     }
+    }
 
     public function deselectArea($trip_id, $area_id)
     {

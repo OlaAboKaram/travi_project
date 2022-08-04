@@ -52,6 +52,7 @@ class AuthController extends Controller
             'image' => 'image|mimes:png,jpeg,gif',
             'Birth' => 'required|date',
         ]);
+        
 
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
@@ -60,6 +61,12 @@ class AuthController extends Controller
                     $validator->validated(),
                     ['password' => bcrypt($request->password)]
                 ));
+                   //image//
+           $file = $request->file('image');
+           $filename = date('YmdHi') . $file->getClientOriginalName();
+           $file->move(public_path('public/Image'), $filename);
+           $user['image'] = $filename;
+           //
         return response()->json([
             'message' => 'User successfully registered',
             'user' => $user
