@@ -62,56 +62,83 @@ class UserTripController extends Controller
      * @param  \App\Models\Trip  $trip
      * @return \Illuminate\Http\Response
      */
+
+    public function show_trip_details($id)
+    {
+        $trip = Trip::find($id);
+        $likes = $trip->likeCount;
+        $result['details'] = $trip;
+        $result['avg_rate'] = $trip->getAverageRatingAttribute();
+
+        $tripAreas = $trip->areas;
+        foreach ($tripAreas as $tripArea) {
+            $arealike[] = $tripArea->likeCount;
+
+        }
+
+
+        return response()->json([$result]);
+    }
+
+public function show_Liked_trips(){
+    $user=auth()->user()->id;
+   return Trip::whereLikedBy($user) // find only posts where user liked them
+    ->with('likeCounter') // highly suggested to allow eager load
+    ->get();
+}
+
     public function show_recommended_trips()
     {
         $user = auth()->user();
-        $trip = Trip::where('start_date','>',today());
+        $trip = Trip::where('start_date', '>', today())->get();
         $triparray = array();
         $userActivities = $user->activities()->get();
         foreach ($userActivities as $useractivity) {
             foreach ($trip as $tripActivity) {
                 foreach ($tripActivity->activities()->get() as $tripac) {
-                    if ($useractivity->pivot->activity_id == $tripac->pivot->activity_id) {
+                    if ($useractivity->pivot->activity_id = $tripac->pivot->activity_id) {
                         $newTrip_id = $tripac->pivot->trip_id;
-                        $triparray[] = $thisTrip = Trip::find($newTrip_id);
+                        $triparray[]  = Trip::find($newTrip_id);
                     };
                 }
             }
         }
-        if (!$triparray) {
+        $tripResult = array_unique($triparray);
+        if (!$tripResult) {
             return response()->json(['error' => 'there is no available trips'], 404);
         }
-        return $triparray;
+        return $tripResult;
     }
     public function likeTrip($id)
     {
         $trip = Trip::find($id);
-        $user = auth()->user();
+        $user = auth()->user()->id;
         $trip->like($user);
-        $trip->liked($user);
         $trip->save();
+        return $trip->likeCount;
+    }
+    public function likesNum($id){
+        $trip = Trip::find($id);
         return $trip->likeCount;
     }
 
     public function dislikeTrip($id)
     {
         $trip = Trip::find($id);
-        $user = auth()->user();
-        $trip->like($user);
-        $trip->liked($user);
+        $user = auth()->user()->id;
+        $trip->unlike($user);
         $trip->save();
         return $trip->likeCount;
     }
     public function addRate(Request $request, $id)
     {
         $user = auth()->user();
-        $trip=Trip::find($id);
-        $user->trips()->attach($trip->id);
+        $trip = Trip::find($id);
 
-        $userId= auth()->user()->id;
-        $userActivities=auth()->user()->trips;
-        foreach($userActivities as $userActivity ){
-            if($userActivity->id = $trip->id ){
+        $userId = auth()->user()->id;
+        $userTrips = auth()->user()->trips;
+        foreach ($userTrips as $userTrip) {
+            if ($userTrip->id = $trip->id) {
                 $rating = new RateableRating();
                 $rating->comment = $request->input('comment');
                 $rating->rating = $request->input('star');
@@ -120,7 +147,8 @@ class UserTripController extends Controller
                 $trip->ratings()->save($rating);
             }
         }
-       /* $trips = Trip::where('id' , '=', $id)->where('end_trip','<',today());
+        return   $trip->ratings;
+        /* $trips = Trip::where('id' , '=', $id)->where('end_trip','<',today());
       //  if ($trips->end_trip > today()){
        //     return response()->json(['error' => 'you can not rate this trip'], 404);
       //  }
@@ -142,27 +170,27 @@ class UserTripController extends Controller
     public function home()
     {
         $user = auth()->user();
-        $trips = Trip::all();
+        $trips = Trip::where('start_date', '>', today())->get();
+        $triparray = array();
         foreach ($trips as $trip) {
             if ($trip->offer != 0)
                 $offerdTrips = $trip;
         }
         $result[] = $user;
         $result[] = $offerdTrips;
-
-
         $userActivities = $user->activities()->get();
         foreach ($userActivities as $useractivity) {
             foreach ($trips as $tripActivity) {
                 foreach ($tripActivity->activities()->get() as $tripac) {
-                    if ($useractivity->pivot->activity_id == $tripac->pivot->activity_id) {
+                    if ($useractivity->pivot->activity_id = $tripac->pivot->activity_id) {
                         $newTrip_id = $tripac->pivot->trip_id;
-                        $thisTrip = Trip::find($newTrip_id);
+                        $triparray = $thisTrip = Trip::find($newTrip_id);
                     }
                 }
             }
         }
 
+        // $result[] = $thisTrip;
         foreach ($trips as $rateTrip) {
             $rateResult[] = $rateTrip->getAverageRatingAttribute();
         }
@@ -172,10 +200,8 @@ class UserTripController extends Controller
                 $highRated = $rateTrip;
             }
         }
-
         $result[] = $highRated;
-        $result[] = $thisTrip;
-        return $result;
+        return response()->json(['user' => $user, '$offerdTrips' => $offerdTrips, 'recommended' => $triparray, 'best trip' => $highRated], 404);
     }
 
     public function delete_trip($id)
@@ -193,12 +219,23 @@ class UserTripController extends Controller
     public function show_offered_trips()
     {
         $user = auth()->user();
-        $trips = Trip::all();
+        $trips = Trip::where('start_date', '>', today())->get();
+        $trips = Trip::paginate(3);
         foreach ($trips as $trip) {
-            if ($trip->offer == 0)
+            if ($trip->offer != 0)
                 $offerdTrips[] = $trip;
         }
         return $offerdTrips;
+    }
+
+    public function highrated_trips()
+    {
+        $trips = Trip::where('start_date', '>', today())->get();
+        $trip = Trip::paginate(4);
+
+            $rateResult[] = Trip::withAvg('ratings', 'rating')->orderBy('ratings_avg_rating', 'desc')->take(5)->get();;
+
+        return $rateResult;
     }
 
     /**

@@ -3,13 +3,13 @@
 namespace App\Models;
 use Conner\Likeable\Likeable;
 use willvincent\Rateable\Rateable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Area extends Model
 {
-    use HasFactory,Likeable, Rateable;
-
+  use HasFactory, Likeable, Rateable;
     protected $fillable = [
         'name',
         'image1',
