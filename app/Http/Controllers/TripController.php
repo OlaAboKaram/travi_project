@@ -104,51 +104,22 @@ class TripController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function show_trip_details($id){
-        $trip= Trip::find($id);
-        $result[]=$trip;
-        $tripArea=$trip->areas;
-        $result[]=$tripArea;
-        return response()->json([$trip]);
-
-
-     }
-    public function show_recommended_trips()
+    public function show_trip_details($id)
     {
-        $user = auth()->user();
-        $trip = Trip::all();
-        $triparray = array();
-        $userActivities = $user->activities()->get();
-        foreach ($userActivities as $useractivity) {
-            foreach ($trip as $tripActivity) {
-                foreach ($tripActivity->activities()->get() as $tripac) {
-                    if ($useractivity->pivot->activity_id == $tripac->pivot->activity_id) {
-                        $newTrip_id = $tripac->pivot->trip_id;
-                        $triparray[] = $thisTrip = Trip::find($newTrip_id);
-                    };
-                }
-            }
+        $trip = Trip::find($id);
+        $likes = $trip->likeCount;
+        $result[] = $trip;
+        $tripAreas = $trip->areas;
+        foreach ($tripAreas as $tripArea) {
+            $arealike[] = $tripArea->likeCount;
         }
-        return $triparray;
-    }
-    public function likeTrip($id)
-    {
-        $trip = Trip::find($id);
-        $user = auth()->user();
-        $trip->like($user);
-        $trip->liked($user);
-        $trip->save();
-        return $trip->likeCount;
+
+
+        return response()->json([$result]);
     }
 
-    public function dislikeTrip($id)
-    {
-        $trip = Trip::find($id);
-        $user = auth()->user();
-        $trip->disliked($user);
-        $trip->save();
-        return $trip->likeCount;
-    }
+
+
     public function addRate(Request $request, $id)
     {
         $trip = Trip::findorfail($id);
@@ -216,9 +187,10 @@ class TripController extends Controller
     public function show_offered_trips()
     {
         $user = auth()->user();
-        $trips = Trip::all();
+        $trips = Trip::where('start_date', '>', today())->get();
+        $trips = Trip::paginate(3);
         foreach ($trips as $trip) {
-            if ($trip->offer == 0)
+            if ($trip->offer != 0)
                 $offerdTrips[] = $trip;
         }
         return $offerdTrips;

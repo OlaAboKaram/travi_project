@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 use App\Models\User;
 
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 use Illuminate\Queue\Middleware\RateLimited;
@@ -83,6 +84,7 @@ class AreaController extends Controller
         $area->name = $request->name;
         $area->country = $request->country;
         $area->city = $request->city;
+        $area->description = $request->description;
         $area->latitude = $request->latitude;
         $area->longitude = $request->longitude;
         $area->image1 = $request->image1->hashName();
@@ -96,15 +98,9 @@ class AreaController extends Controller
 
     public function likeArea($id)
     {
-         $area = Area::find($id);
-         if (!$area){
-            return response()->json([
-                'message' => 'admin successfully added an area', 'area' => $area
-            ], 201);
-         }
-        $user = auth()->user();
+        $area = Area::find($id);
+        $user = auth()->user()->id;
         $area->like($user);
-        $area->liked($user);
         $area->save();
         return $area->likeCount;
     }
@@ -112,12 +108,11 @@ class AreaController extends Controller
     public function dislikeArea($id)
     {
         $area = Area::find($id);
-        $user = auth()->user();
-        $area->like($user);
-        $area->liked($user);
+        $user = auth()->user()->id;
+        $area->unlike($user);
         $area->save();
         return $area->likeCount;
-    } 
+    }
     public function updateArea(Request $request, $id)
     {
         try {
@@ -147,6 +142,21 @@ class AreaController extends Controller
         ], 201);
     }
 
+    public function show_areas(){
+        $areas=Area::all();
+        $areaInfo[]=  $areas;
+        foreach ($areas as $area) {
+            $arealike= $area->likeCount;
+            $areaInfo[]= $area->comments;
+
+        }
+
+        if (!$area) {
+            return response()->json(['error' => 'no areas'], 404);
+        }else{
+            return $areaInfo;
+        }
+    }
     public function selectCountry_City(Request $request, $trip_id)
     {
         $trip = Trip::find($trip_id);
@@ -172,6 +182,17 @@ class AreaController extends Controller
         $trip->areas()->attach($area->id);
         return response()->json(['success' => 'the area was selected'], 200);
     }
+    public function show_area_like($id){
+         $likes = DB::table('likeable_likes')->where('likeable_id', '=', $id)->get();
+        foreach($likes as $like){
+            $users[]=$like->user_id;
+        }
+        $userinfo=array();
+        foreach($users as $user){
+             $userinfo[]=User::where('id', '=', $user)->get()->pluck('id','image');
+        }
+        return $userinfo;
+     }
 
     public function deselectArea($trip_id, $area_id)
     {
@@ -226,7 +247,7 @@ class AreaController extends Controller
             'body' => 'required',
         ]);
         $comment->update($request->all());
-        return response()->json(['meassage' => 'the comment was upadated', 'comment' =>  $comment ], 201);
+        return response()->json(['meassage' => 'the comment was upadated', 'comment' =>  $comment], 201);
     }
     /**
      * Display the specified resource.

@@ -53,17 +53,16 @@ class DateDayController extends Controller
         try {
             $dateday = new Dateday();
             $request->validate([
-                'name' => 'required|string|max:50',
                 'description' => 'required|string|max:255',
                 'day' => 'required|date',
             ]);
-            $dateday->name = $request->input('name');
             $dateday->description = $request->input('description');
             $dateday->day = $request->input('day');
+            $day = Carbon::createFromFormat('Y-m-d',  $dateday->day)->format('l');
+            $dateday->name = $day;
         } catch (ValidationException $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
-
 
         $dateday->save();
         $dailyprogram = $dailyprogram->datedays()->save($dateday);
@@ -104,10 +103,10 @@ class DateDayController extends Controller
         $dailyprogram = Dailyprogram::find($id);
         $tripDailyProgram = $dailyprogram->trip_id;
         $trip = Trip::find($tripDailyProgram);
-      //  $tripdays = $trip->end_trip - $trip->start_trip;
-        $start_trip =Carbon::parse($trip->start_trip);
-        $end_trip =Carbon::parse($trip->end_trip);
-        $tripdays = $start_trip ->diffInDays($end_trip, false);
+        //  $tripdays = $trip->end_trip - $trip->start_trip;
+        $start_trip = Carbon::parse($trip->start_trip);
+        $end_trip = Carbon::parse($trip->end_trip);
+        $tripdays = $start_trip->diffInDays($end_trip, false);
 
         if (!$dailyprogram) {
             return response()->json(['error' => 'not found'], 404);
