@@ -7,7 +7,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ActivityController;
 
 
-
+use App\Http\Controllers\UserEventController;
 use App\Http\Controllers\DailyProgramController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\DatedayController;
@@ -91,6 +91,8 @@ Route::group([
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::post('/refresh', [AuthController::class, 'refresh']);
   Route::get('/user-profile', [AuthController::class, 'userProfile']);
+  Route::post('/show_event_details/{id}', [UserEventController::class, 'show_event_details']);
+
   //  Route::post('/Admin_add_activity', 'App\Http\Controllers\ActivityController@Admin_add_activity');
   //  Route::get('/show', 'App\Http\Controllers\ActivityController@show');
   
